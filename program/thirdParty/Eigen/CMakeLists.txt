@@ -11,7 +11,7 @@ endif()
 # guard against bad build-type strings
 
 if (NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release")
+	set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_tolower)
