@@ -1089,6 +1089,11 @@ void Coptim::normalize(std::vector<std::vector<float> >& texs,
 }
 
 void Coptim::normalize(std::vector<float>& tex) {
+  // For a float vector containing rgbrgb... values
+  // Subtract the mean color, then divide by the mean squared deviation from the
+  // mean in colorspace.
+  // Operates on tex in-place.
+  // Three passes through the image.
   const int size = (int)tex.size();
   const int size3 = size / 3;
   Vec3f ave;

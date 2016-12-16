@@ -10,9 +10,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(CMVS-PMVS2 C CXX)
 
-# By default build in Release mode
+# By default build in Release mode with debug info
 IF(NOT CMAKE_BUILD_TYPE AND NOT MSVC)
-  SET(CMAKE_BUILD_TYPE "Release")
+	SET(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE AND NOT MSVC)
 
 INCLUDE_DIRECTORIES(
