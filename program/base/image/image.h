@@ -539,26 +539,22 @@ Vec3f Cimage::getColor(const float x, const float y, const int level) const{
                m_dimages[level][index2 + 2] * f01 + m_dimages[level][index2 + 5] * f11);
   */
 #else
-  const unsigned char* ucp0 = &m_images[level][index] - 1;
-  const unsigned char* ucp1 = &m_images[level][index2] - 1;
-  float r = 0.0f;  float g = 0.0f;  float b = 0.0f;
-  r += *(++ucp0) * f00 + *(++ucp1) * f01;
-  g += *(++ucp0) * f00 + *(++ucp1) * f01;
-  b += *(++ucp0) * f00 + *(++ucp1) * f01;
-  r += *(++ucp0) * f10 + *(++ucp1) * f11;
-  g += *(++ucp0) * f10 + *(++ucp1) * f11;
-  b += *(++ucp0) * f10 + *(++ucp1) * f11;
-  return Vec3f(r, g, b);
-  /*
-  return Vec3f(m_images[level][index] * f00 + m_images[level][index + 3] * f10 +
-               m_images[level][index2] * f01 + m_images[level][index2 + 3] * f11,
-               
-               m_images[level][index + 1] * f00 + m_images[level][index + 4] * f10 +
-               m_images[level][index2 + 1] * f01 + m_images[level][index2 + 4] * f11,
-               
-               m_images[level][index + 2] * f00 + m_images[level][index + 5] * f10 +
-               m_images[level][index2 + 2] * f01 + m_images[level][index2 + 5] * f11);
-  */
+  const unsigned char* ucp0 = &m_images[level][index];
+  const unsigned char* ucp1 = &m_images[level][index2];
+  // Load the four pixels
+  float p0[4] = {ucp0[0], ucp0[1], ucp0[2], 0.0f}; // * f00
+  float p1[4] = {ucp0[3], ucp0[4], ucp0[5], 0.0f}; // * f10
+  float p2[4] = {ucp1[0], ucp1[1], ucp1[2], 0.0f}; // * f01
+  float p3[4] = {ucp1[3], ucp1[4], ucp1[5], 0.0f}; // * f11
+  // Do the weighting
+  for(int i=0; i<4; i++) p0[i] *= f00;
+  for(int i=0; i<4; i++) p1[i] *= f10;
+  for(int i=0; i<4; i++) p2[i] *= f01;
+  for(int i=0; i<4; i++) p3[i] *= f11;
+  // Do a sum reduction. Tree reduction was slower.
+  float p4[4];
+  for(int i=0; i<4; i++) p4[i] = p0[i]+p1[i]+p2[i]+p3[i];
+  return Vec3f(p4[0],p4[1],p4[2]);
 #endif
   /*
   const int lx = (int)floor(x);    const int ux = lx + 1;
